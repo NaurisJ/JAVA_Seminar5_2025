@@ -31,7 +31,18 @@ public class Seminar5Application {
 				prodRepo.save(p3);
 				
 				System.out.println("CIk produkti ir DB: " + prodRepo.count());
+				
+				//Izgut ari java puse visus produktus un izprintet konsole
+				// pamainit kada produkta ceu un saglabat izkmainito DB un apskatities no db puses
+				// izdzest 
+				System.out.println(prodRepo.findAll());
+				
+//				System.out.println(prodRepo.findById(21).get());
+				
+				
+				
 			}
+			
 		};
 	}
 }
