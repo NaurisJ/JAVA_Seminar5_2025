@@ -77,7 +77,11 @@ public class ProductCRUDServiceImpl implements IProductCRUDService{
 
 	@Override
 	public void deleteByID(int id) throws Exception {
-		// TODO Auto-generated method stub
+		
+		
+		Product productToDelete = retrieveById(id);
+		
+		prodRepo.delete(productToDelete);
 		
 	}
 
