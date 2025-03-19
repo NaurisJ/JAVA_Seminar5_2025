@@ -2,7 +2,6 @@ package lv.venta.service.impl;
 
 import java.util.ArrayList;
 
-import org.hibernate.validator.internal.util.privilegedactions.NewProxyInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,103 +9,102 @@ import lv.venta.model.Product;
 import lv.venta.repo.IProductRepo;
 import lv.venta.service.IProductCRUDService;
 
+
 @Service
 public class ProductCRUDServiceImpl implements IProductCRUDService{
-	
+
 	@Autowired
 	private IProductRepo prodRepo;
-
+		
+	
 	@Override
 	public void createProduct(String title, String description, float price, int quantity) throws Exception {
-		if (title == null || !title.matches("[A-Z]{1}[a-z ]{2,15}") ||
-		 (description == null || !description.matches("[A-Za-z :;]{3,20}") || price < 0 || price > 1000
-				|| quantity < 0 || quantity > 100)){
+		if(title == null || !title.matches("[A-Z]{1}[a-z ]{2,15}")
+				|| description == null || !description.matches("[A-Za-z :;]{3,30}")
+				|| price < 0 || price > 1000
+				|| quantity < 0 || quantity > 100)
+		{
 			throw new Exception("Incorrect input params");
 		}
 		
-		if (prodRepo.existsByTitleAndDescriptionAndPrice(title,description,quantity)) {
-			
-			
-			Product productExists = prodRepo.findByTitleAndDescriptionAndPrice(title,description,price);
+		if(prodRepo.existsByTitleAndDescriptionAndPrice(title, description, price))
+		{
+		
+			Product productExists = 
+			prodRepo.findByTitleAndDescriptionAndPrice(title, description, price);
 			
 			int newQuantity = productExists.getQuantity() + quantity;
 			productExists.setQuantity(newQuantity);
 			prodRepo.save(productExists);
-	
 		}
-		// ja neeksiste			
-		Product  newProduct = new Product(title,description,price,quantity);
-
-		
-		prodRepo.save(newProduct);
-		
-		
-		
-		
+		else
+		{
+			Product newProduct = new Product(title, description, price, quantity);
+			prodRepo.save(newProduct);
+		}
 		
 	}
 
 	@Override
 	public ArrayList<Product> retrieveAll() throws Exception {
-		if (prodRepo.count() == 0 ) {
-			throw new Exception("Product table is empty!");
+		if(prodRepo.count() == 0)
+		{
+			throw new Exception("Product table is empty");
 		}
 		
 		ArrayList<Product> result = (ArrayList<Product>) prodRepo.findAll();
-		
 		return result;
+		
 	}
 
 	@Override
 	public Product retrieveById(long id) throws Exception {
-		if (id <= 0) {
-			throw new Exception("Negative or '0' id!");
+		if(id <= 0)
+		{
+			throw new Exception("Id can not be negative");
 		}
 		
-		if (!prodRepo.existsById(id)) {
-			throw new Exception("Product with ID doesn't exist");
+		if(!prodRepo.existsById(id))
+		{
+			throw new Exception("Product with id " + id + " doesn't exist");
 		}
-
-		return prodRepo.findById(id).get();
 		
-		
+		Product retreivedproduct = prodRepo.findById(id).get();
+		return retreivedproduct;
 	}
 
 	@Override
-	public void updateProductByID(long id, String title, String description, float price, int quantity) throws Exception {
-		// sameklejam produktu, kuru gribam rediget - var izmantot retrieve byid
+	public void updateProductById(long id, String description, float price, int quantity) throws Exception {
+		Product productForUpdating = retrieveById(id);
 		
-		Product productToUpdate = retrieveById(id);
-		
-		// veicam parbaudes uz input parametriem (iznemot id)
-		if (description == null || !description.matches("[A-Za-z :;]{3,20}") || price < 0 || price > 1000
-				|| quantity < 0 || quantity > 100) {
+		if(description == null || !description.matches("[A-Za-z :;]{3,30}")
+				|| price < 0 || price > 1000
+				|| quantity < 0 || quantity > 100)
+		{
 			throw new Exception("Incorrect input params");
 		}
 		
-		if (!productToUpdate.getDescription().equals(description)) {
-			productToUpdate.setDescription(description);
+		if(!productForUpdating.getDescription().equals(description)) {
+			productForUpdating.setDescription(description);
 		}
 		
-		if (productToUpdate.getPrice() != price) {
-			productToUpdate.setPrice(price);
+		
+		if(productForUpdating.getPrice() != price) {
+			productForUpdating.setPrice(price);
 		}
 		
-		if (productToUpdate.getQuantity() != quantity) {
-			productToUpdate.setQuantity(quantity);
+		if(productForUpdating.getQuantity() != quantity) {
+			productForUpdating.setQuantity(quantity);
 		}
-		
-		prodRepo.save(productToUpdate); // te nostradas kaa sql vaicajums
+				
+		prodRepo.save(productForUpdating);//te nostrādās kā UPDATE SQL vaicājums
 		
 	}
 
 	@Override
-	public void deleteByID(int id) throws Exception {
-		
-		
-		Product productToDelete = retrieveById(id);
-		
-		prodRepo.delete(productToDelete);
+	public void deleteById(long id) throws Exception {
+		Product productForDeleting = retrieveById(id);
+		prodRepo.delete(productForDeleting);
 		
 	}
 

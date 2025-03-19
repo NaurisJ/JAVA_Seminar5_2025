@@ -1,13 +1,13 @@
 <html xmlns:th="https://www.thymeleaf.org">
 
 <body>
-<p> Lūdzu ievadiet jaunu produktu:</p>
-	<form action="#" th:action="@{/product/crud/create}" th:object="${product}" method="post"	>	
+<p> Lūdzu rediģējiet eksistējošo produktu:</p>
+	<form action="#" th:action="@{/product/crud/update/__${id}__}" th:object="${product}" method="post"	>	
 		<table>
 			<tr>
 				<td>Nosaukums:</td>
-				<td>  <input type="text"  th:field="*{title}" > </td>
-				<td th:if="${#fields.hasErrors('title')}" th:errors="*{title}" ></td>
+				<td> <p th:text = "*{title}"></p>  </td>
+
 			</tr>
 			
 			<tr>
