@@ -11,7 +11,8 @@ public interface IProductFilterAndCalcService {
 	
 	public abstract ArrayList<Product> getAllProductsWhereQuantityLargerThan(int threshold) throws Exception;
 	
-	public abstract ArrayList<Product> getAllProductsWhereTitleOrDescriptionLikeContains(String text);
+	public abstract ArrayList<Product>
+	getAllProductsWhereTitleOrDescriptionContains(String text) throws Exception;
 	
 	public abstract float getIncomeFromProducts() throws Exception;
 	
