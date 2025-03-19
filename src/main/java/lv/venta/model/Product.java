@@ -32,7 +32,7 @@ public class Product {
 	private long id;
 	
 	@Column(name = "Title")
-	@NotNull
+//	@NotNull <- tas tapēc, lai title varetu caur update nesaglabāt 
 	@Pattern(regexp = "[A-Z]{1}[a-z ]{2,15}")
 //	@Size(min = 3, max = 16)
 	private String title;

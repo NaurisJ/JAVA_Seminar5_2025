@@ -100,6 +100,7 @@ public class ProductCRUDController {
 		try {
 			Product productToUpdate = prodService.retrieveById(id);
 			model.addAttribute("product", productToUpdate);
+			model.addAttribute("title",productToUpdate.getTitle());
 			return "update-product"; //paradis update-product.html
 		} catch (Exception e) {
 			model.addAttribute("package",e.getMessage());
@@ -109,17 +110,48 @@ public class ProductCRUDController {
 	}
 	
 	@PostMapping("/update/{id}")
-	public String postControllerUpdateProductById(@PathVariable(name = "id") long id,
-			@Valid Product product, BindingResult result, Model model) {
+	public String postControllerUpdateProductById
+	(@PathVariable(name = "id") long id, @Valid Product product, BindingResult result, Model model)
+	{
+		if(result.hasErrors())
+		{
+			try
+			{
+				Product p = prodService.retrieveById(id);
+				model.addAttribute("title", p.getTitle());
+				return "update-product";
+			}catch (Exception e) {
+				model.addAttribute("package", e.getMessage());
+				return "show-error";
+			}
+			
+		}
+		
+		
 		try {
 			prodService.updateProductById(id, product.getDescription(), product.getPrice(), product.getQuantity());
-			return "redirect:/product/crud/all";
+			return "redirect:/product/crud/all";//pāŗslēdzams uz all url adresi
 		} catch (Exception e) {
-			model.addAttribute("package",e.getMessage());
+			model.addAttribute("package", e.getMessage());
 			return "show-error";
 		}
 	}
 	
+	
+	@GetMapping("/delete/{id}")
+	public String getControllerDeleteProductById(@PathVariable(name = "id") long id, Model model) {
+		try {
+			prodService.deleteById(id);
+			model.addAttribute("package", prodService.retrieveAll());
+			return "show-multiple-products";
+		} catch (Exception e) {
+			model.addAttribute("package", e.getMessage());
+			return "show-error";
+		}
+	}
+	
+	//izveidot get mapping prieks dzesanas, kur tiek pardots ari id
+	//meginat dzest, bet ja ir kludas, paradit show-error lapu
 	
 
 }

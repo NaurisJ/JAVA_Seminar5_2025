@@ -4,10 +4,18 @@
 <p> Lūdzu rediģējiet eksistējošo produktu:</p>
 	<form action="#" th:action="@{/product/crud/update/__${id}__}" th:object="${product}" method="post"	>	
 		<table>
+			<!---
 			<tr>
 				<td>Nosaukums:</td>
 				<td> <p th:text = "*{title}"></p>  </td>
 
+			</tr>
+			
+			---->
+			
+			<tr>
+				<td>Nosaukums:</td>
+				<td>  <input type="text"  th:field="*{title}" disabled="true"> </td>
 			</tr>
 			
 			<tr>
