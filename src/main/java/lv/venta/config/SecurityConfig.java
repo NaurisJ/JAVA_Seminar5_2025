@@ -52,20 +52,32 @@ public class SecurityConfig {
 	}
 	
 	@Bean
-	public SecurityFilterChain createConfigForEndpoints(HttpSecurity http) {
-		http.authorizeHttpRequests().requestMatchers("/simple").permitAll()
-			.requestMatchers("/getdata").hasAuthority("ADMIN").requestMatchers("/getmultipleproducts").hasAuthority("ADMIN")
-			.requestMatchers("/prduct/crud/all").permitAll()
+	public SecurityFilterChain createConfigForEndpoints(HttpSecurity http) throws Exception {
+		
+		http.authorizeHttpRequests(
+				auth -> auth
+			.requestMatchers("/simple").hasAuthority("USER")
+			.requestMatchers("/getdata").hasAuthority("ADMIN")
+			.requestMatchers("/getproduct").hasAuthority("ADMIN")
+			.requestMatchers("/getmultipleproducts").hasAuthority("ADMIN")
+			.requestMatchers("/product/crud/all").permitAll()
 			.requestMatchers("/product/crud/one**").permitAll()
-			.requestMatchers("/produc/crud/all/**").permitAll()
+			.requestMatchers("/product/crud/all/**").permitAll()
 			.requestMatchers("/product/crud/create").hasAuthority("ADMIN")
 			.requestMatchers("/product/crud/update/**").hasAuthority("ADMIN")
 			.requestMatchers("/product/crud/delete/**").hasAuthority("ADMIN")
-			.requestMatchers("/product/process/price/**").hasAnyAuthority("ADMIN","USER");
-		
-		http.formLogin().permitAll();
+			.requestMatchers("/product/process/price/**").hasAnyAuthority("ADMIN", "USER")
+			
+				);
+			//TODO un parējie endpointi jeb adreses
+			
+			
+		http.formLogin(auth -> auth.permitAll());
 		
 		return http.build();
+		
+		
+		
 	}
 	
 	
